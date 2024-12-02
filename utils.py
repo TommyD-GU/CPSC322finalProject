@@ -1,7 +1,5 @@
 import copy
-
 import numpy as np
-from mysklearn import myutils
 from tabulate import tabulate
 
 
@@ -57,7 +55,7 @@ def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
 
     # Shuffle the data if the shuffle flag is set to True
     if shuffle:
-        myutils.randomize_in_place(X_copy, y_copy, random_state)
+        randomize_in_place(X_copy, y_copy, random_state)
 
     # Get the total number of samples
     n_samples = len(X)
@@ -81,3 +79,20 @@ def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
 
     # Return the split data: training and testing sets for both features and labels
     return X_train, X_test, y_train, y_test
+
+def randomize_in_place(alist, parallel_list=None):
+    '''shuffle in place
+
+    args: a list and optional second list
+
+    returns the list(s) in shuffled order
+    '''
+
+    for i in range(len(alist)):
+        # generate a random index to swap this value at i with
+        rand_index = np.random.randint(0, len(alist)) # rand int in [0, len(alist))
+        # do the swap
+        alist[i], alist[rand_index] = alist[rand_index], alist[i]
+        if parallel_list is not None:
+            parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
+
