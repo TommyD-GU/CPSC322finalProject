@@ -15,6 +15,7 @@
 #
 ###########################################################################
 """
+import utils
 class MyKNeighborsClassifier:
     """Represents a simple k-nearest neighbors classifier.
 
@@ -75,7 +76,7 @@ class MyKNeighborsClassifier:
             dist = []
             # Compute Euclidean distance
             for i, train_instance in enumerate(self.X_train):
-                distance = euclid_dist(test_instance, train_instance)  # Calculate distance
+                distance = utils.euclid_dist(test_instance, train_instance)  # Calculate distance
                 dist.append((distance, i))  # Store distance and index
             dist.sort(key=lambda x: x[0])  # Sort by distance
             # Extract the k smallest distances and their corresponding indices
@@ -103,16 +104,3 @@ class MyKNeighborsClassifier:
             y_predicted.append(predicted_class)  # Append predicted class
         return y_predicted
 
-def euclid_dist(pt1, pt2):
-    """Computes the Euclidean distance between two points.
-
-    Args:
-        pt1 (list): First point as a list of coordinates.
-        pt2 (list): Second point as a list of coordinates.
-
-    Returns:
-        float: The Euclidean distance between pt1 and pt2.
-    """
-    # Calculate the sum of squared differences
-    sum_squared_diff = sum((x1 - x2) ** 2 for x1, x2 in zip(pt1, pt2))
-    return sum_squared_diff ** 0.5  # Return the square root of the sum of squared differences
