@@ -46,6 +46,8 @@ def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
             https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     """
     # Set a specific seed for random number generation if a random state is provided
+    """Split dataset into train and test sets based on a test set size."""
+    # Set a specific seed for random number generation if a random state is provided
     if random_state is not None:
         np.random.seed(random_state)
 
@@ -55,14 +57,14 @@ def train_test_split(X, y, test_size=0.33, random_state=None, shuffle=True):
 
     # Shuffle the data if the shuffle flag is set to True
     if shuffle:
-        randomize_in_place(X_copy, y_copy, random_state)
+        randomize_in_place(X_copy, y_copy)  # Removed random_state here
 
     # Get the total number of samples
     n_samples = len(X)
 
     # Convert test_size from a float to an integer if it's given as a proportion
     if isinstance(test_size, float):
-        test_size = int((n_samples * test_size) + 0.999)    # Adding 0.999 ensures rounding up
+        test_size = int((n_samples * test_size) + 0.999)  # Adding 0.999 ensures rounding up
 
     # Check that test_size is smaller than the number of samples; raise an error otherwise
     if test_size >= n_samples:
@@ -96,3 +98,8 @@ def randomize_in_place(alist, parallel_list=None):
         if parallel_list is not None:
             parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
 
+def normalize_data(data):
+    """Normalizes the input list of data."""
+    min_val = min(data)
+    max_val = max(data)
+    normalized_data = [(x - min_val) / (max_val - min_val) for x in data]
