@@ -279,3 +279,51 @@ def calculate_confusion_matrix(results):
                    [false_negative, true_positive]]
 
     return conf_matrix
+
+def compute_accuracy(y_pred, y_test):
+    """
+    Computes the accuracy of predictions.
+
+    Args:
+        y_pred (list): List of predicted values.
+        y_test (list): List of true values.
+
+    Returns:
+        float: Accuracy as a proportion (between 0 and 1).
+    """
+    if len(y_pred) != len(y_test):
+        raise ValueError("The lengths of y_pred and y_test must be the same.")
+
+    # Count the number of correct predictions
+    correct_predictions = sum(1 for pred, true in zip(y_pred, y_test) if pred == true)
+
+    # Compute accuracy as the ratio of correct predictions to the total number of instances
+    accuracy = correct_predictions / len(y_test)
+    return accuracy
+
+def compute_recall(y_pred, y_test, positive_label=1):
+    """
+    Computes the recall of predictions.
+
+    Args:
+        y_pred (list): List of predicted values.
+        y_test (list): List of true values.
+        positive_label (obj): The label considered as the positive class (default is 1).
+
+    Returns:
+        float: Recall as a proportion (between 0 and 1).
+    """
+    if len(y_pred) != len(y_test):
+        raise ValueError("The lengths of y_pred and y_test must be the same.")
+
+    # Count the number of true positives and total actual positives
+    true_positives = sum(1 for pred, true in zip(y_pred, y_test) if pred == true == positive_label)
+    actual_positives = sum(1 for true in y_test if true == positive_label)
+
+    # Handle case where there are no positive instances in y_test
+    if actual_positives == 0:
+        return 0.0  # Recall is undefined but often set to 0 when there are no positives
+
+    # Compute recall
+    recall = true_positives / actual_positives
+    return recall
