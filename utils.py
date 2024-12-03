@@ -1,5 +1,8 @@
 import copy
+import random
+import matplotlib.pyplot as plt
 import numpy as np
+from mypytable import MyPyTable
 from tabulate import tabulate
 
 
@@ -103,3 +106,55 @@ def normalize_data(data):
     min_val = min(data)
     max_val = max(data)
     normalized_data = [(x - min_val) / (max_val - min_val) for x in data]
+
+    return normalized_data
+
+def rand_inds(num, total):
+    """Creates a list of num random indices from 0 to total-1."""
+    random.seed(1)  
+    inds = []
+    for _ in range(num):  # Iterate num times
+        inds.append(random.randint(0, total - 1))  # Adjusted to valid index range
+    return inds
+
+def freq_plot(infile, col_name_x):
+    """Generates a frequency plot for the specified column in the data file.
+
+    Args:
+        infile (str): The name of the input file containing the data.
+        col_name_x (str): The name of the column to plot frequencies for.
+
+    Returns:
+        None
+    """
+    # Load the data table from the specified file
+    tbl = MyPyTable().load_from_file(infile)
+    x_unsorted = tbl.get_column(col_name_x)
+    x_list = sorted(x_unsorted)
+    unique_vals = []  # To hold unique values
+    y = []  # To hold frequency counts
+
+    # Loop through each sorted value to count frequencies
+    for value in x_list:
+        if value in unique_vals:
+            # Increment frequency count for existing value
+            index = unique_vals.index(value)
+            y[index] += 1
+        else:
+            # Add new value and initialize its frequency count
+            unique_vals.append(value)
+            y.append(1)
+
+    x = set(x_list)  # Extract unique values
+    x = list(x)
+    # Display x and y values
+    print("x values:", x, "y values:", y)
+
+    # Create a bar plot
+    plt.figure()
+    plt.bar(x, y)
+    # Label plot
+    plt.xlabel(col_name_x)
+    plt.ylabel('count')
+    plt.title(f'Total Number of {col_name_x}')
+    plt.show()
