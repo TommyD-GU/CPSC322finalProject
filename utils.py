@@ -115,7 +115,7 @@ def rand_inds(num, total):
         inds.append(random.randint(0, total - 1))  # Adjusted to valid index range
     return inds
 
-def freq_plot(data, header,col_name_x):
+def freq_plot(data, header,col_name_x, lables=None):
     """Generates a frequency plot for the specified column in the data file.
 
     Args:
@@ -155,7 +155,7 @@ def freq_plot(data, header,col_name_x):
     # Label plot
     plt.xlabel(col_name_x)
     plt.ylabel('count')
-    plt.title(f'Total Number of {col_name_x}')
+    plt.title(f'Frequency plot of {col_name_x}')
     plt.show()
 
 
@@ -181,8 +181,8 @@ def calculate_accuracy_error_rate(results):
     """Calculate the accuracy and error rate from the results of cross-validation.
 
     Args:
-        results (list of tuples): Each tuple contains the true labels (y_test) and the predicted labels (y_pred).
-            Each tuple is of the form (y_test, y_pred).
+        results (list of tuples): Each tuple contains the true labels (y_test) and
+            the predicted labels (y_pred). Each tuple is of the form (y_test, y_pred).
 
     Returns:
         accuracy (float): The accuracy of the classifier.
@@ -208,8 +208,8 @@ def calculate_precision_recall_f1(results):
     """Calculate precision, recall, and F1 score from the results of cross-validation.
 
     Args:
-        results (list of tuples): Each tuple contains the true labels (y_test) and the predicted labels (y_pred).
-            Each tuple is of the form (y_test, y_pred).
+        results (list of tuples): Each tuple contains the true labels (y_test)
+            and the predicted labels (y_pred). Each tuple is of the form (y_test, y_pred).
 
     Returns:
         precision (float): The precision of the classifier.
@@ -247,8 +247,8 @@ def calculate_confusion_matrix(results):
     """Calculate the confusion matrix from the results of cross-validation.
 
     Args:
-        results (list of tuples): Each tuple contains the true labels (y_test) and the predicted labels (y_pred).
-            Each tuple is of the form (y_test, y_pred).
+        results (list of tuples): Each tuple contains the true labels (y_test)
+            and the predicted labels (y_pred). Each tuple is of the form (y_test, y_pred).
 
     Returns:
         conf_matrix (list of list): A confusion matrix as a 2x2 list of counts.
