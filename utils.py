@@ -1,8 +1,8 @@
-import copy
+
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-from mypytable import MyPyTable
+from mysklearn.mypytable import MyPyTable
 
 
 
