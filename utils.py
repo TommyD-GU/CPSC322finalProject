@@ -265,3 +265,26 @@ def compute_recall(y_pred, y_test, positive_label=1):
     # Compute recall
     recall = true_positives / actual_positives
     return recall
+
+def randomize_in_place(alist, parallel_list=None, seed=0):
+    """
+    Randomizes the order of elements in `alist` in place by swapping each element with another random element.
+    If a `parallel_list` is provided, it will be shuffled in the same order to maintain alignment with `alist`.
+
+    Args:
+        alist (list): The main list to be shuffled in place.
+        parallel_list (list, optional): A second list to shuffle in parallel with `alist`. The shuffle
+            will maintain the correspondence of elements between `alist` and `parallel_list`.
+        seed (int): Seed value for the random number generator to ensure reproducibility (default is 0).
+
+    Note:
+        This function is part of U4-Supervised-Learning/ClassificationFun/main.py, written by Gina Sprint.
+    """
+    np.random.seed(seed)
+    for i in range(len(alist)):
+        # generate a random index to swap this value at i with
+        rand_index = np.random.randint(0, len(alist)) # rand int in [0, len(alist))
+        # do the swap
+        alist[i], alist[rand_index] = alist[rand_index], alist[i]
+        if parallel_list is not None:
+            parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
