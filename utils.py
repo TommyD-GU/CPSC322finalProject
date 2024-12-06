@@ -20,23 +20,6 @@ def euclid_dist(pt1, pt2):
     sum_squared_diff = sum((x1 - x2) ** 2 for x1, x2 in zip(pt1, pt2))
     return sum_squared_diff ** 0.5  # Return the square root of the sum of squared differences
 
-
-def randomize_in_place(alist, parallel_list=None):
-    '''shuffle in place
-
-    args: a list and optional second list
-
-    returns the list(s) in shuffled order
-    '''
-
-    for i in range(len(alist)):
-        # generate a random index to swap this value at i with
-        rand_index = np.random.randint(0, len(alist)) # rand int in [0, len(alist))
-        # do the swap
-        alist[i], alist[rand_index] = alist[rand_index], alist[i]
-        if parallel_list is not None:
-            parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
-
 def normalize_data(data):
     """Normalizes the input list of data."""
     min_val = min(data)
