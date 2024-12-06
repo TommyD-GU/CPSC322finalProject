@@ -1,8 +1,8 @@
 import importlib
 import utils
-import mypytable
+import mysklearn.mypytable as mypytable
 importlib.reload(mypytable)
-from mypytable import MyPyTable
+from mysklearn.mypytable import MyPyTable
 import mysklearn.myknnclassifier as myknnclassifier
 
 mush_data = MyPyTable()
