@@ -26,7 +26,7 @@ def predict():
     
     # Convert them into a list (or normalize if needed)
     instance = [float(season), float(stem_width), float(gill_color), float(cap_diameter)]
-    
+                   
     # Load the trained KNN model
     knn = load_model()
     

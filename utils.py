@@ -271,3 +271,102 @@ def randomize_in_place(alist, parallel_list=None, seed=0):
         alist[i], alist[rand_index] = alist[rand_index], alist[i]
         if parallel_list is not None:
             parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
+
+
+def sample_classification_data(dataset, classification_index=8, sample_size=1000):
+    """
+    Randomly samples 1000 rows for each classification (1 and 0) from the dataset.
+
+    Parameters:
+    - dataset: List of lists, where each inner list represents a row in the dataset.
+    - classification_index: The index of the classification attribute in each row (default is 8).
+    - sample_size: Number of rows to sample for each classification (default is 1000).
+
+    Returns:
+    - sampled_data: A new dataset containing the sampled rows for each classification.
+    """
+    # Separate rows based on their classification
+    class_0 = [row for row in dataset if row[classification_index] == 0]
+    class_1 = [row for row in dataset if row[classification_index] == 1]
+
+    # Ensure there are enough rows to sample from
+    if len(class_0) < sample_size or len(class_1) < sample_size:
+        raise ValueError("Not enough rows in one or both classifications to sample the requested size.")
+
+    # Randomly sample 1000 rows from each classification
+    sampled_class_0 = random.sample(class_0, sample_size)
+    sampled_class_1 = random.sample(class_1, sample_size)
+
+    # Combine the sampled rows and shuffle them
+    sampled_data = sampled_class_0 + sampled_class_1
+    random.shuffle(sampled_data)
+
+    return sampled_data
+
+def plot_scatter(data, header, col_name_x, col_name_y=None):
+    """
+    Plots a scatter plot for the specified column in the data.
+
+    Args:
+        data (list of lists): The data table as a list of rows.
+        header (list of str): The column headers for the data.
+        col_name_x (str): The name of the column for the x-axis.
+        col_name_y (str): The name of the column for the y-axis (optional).
+                          If None, uses row indices as y values.
+
+    Returns:
+        None
+    """
+    # Find column indices
+    x_index = header.index(col_name_x)
+    x_values = [row[x_index] for row in data]
+
+    # If col_name_y is provided, use it; otherwise, use indices as y-values
+    if col_name_y:
+        y_index = header.index(col_name_y)
+        y_values = [row[y_index] for row in data]
+    else:
+        y_values = list(range(len(data)))
+
+    # Create scatter plot
+    plt.figure(figsize=(8, 6))
+    plt.scatter(x_values, y_values, color='blue', alpha=0.7, edgecolors='k')
+    
+    # Add labels and title
+    plt.xlabel(col_name_x)
+    plt.ylabel(col_name_y if col_name_y else "Index")
+    plt.title(f"Scatter Plot of {col_name_x} vs {col_name_y or 'Index'}")
+    plt.grid(True)
+    plt.show()
+
+def box_plot(data, header, col_name):
+    """
+    Plots a box-and-whisker plot for the specified column in the data.
+
+    Args:
+        data (list of lists): The data table as a list of rows.
+        header (list of str): The column headers for the data.
+        col_name (str): The name of the column to plot.
+
+    Returns:
+        None
+    """
+    # Find column index for the specified column name
+    col_index = header.index(col_name)
+    
+    # Extract the column values
+    col_values = [row[col_index] for row in data]
+    
+    # Create a box plot
+    plt.figure(figsize=(6, 8))
+    plt.boxplot(col_values, vert=True, patch_artist=True, 
+                boxprops=dict(facecolor="lightblue", color="blue"),
+                whiskerprops=dict(color="blue"),
+                capprops=dict(color="blue"),
+                medianprops=dict(color="red"))
+    
+    # Add labels and title
+    plt.ylabel(col_name)
+    plt.title(f"Box-and-Whisker Plot of {col_name}")
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()
