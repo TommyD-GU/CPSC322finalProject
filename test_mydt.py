@@ -4,12 +4,12 @@ from mysklearn.myrandomforestclassifier import MyRandomForestClassifier
 
 def test_fit_and_predict():
     X = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
-    y = ["yes", "no", "yes", "no", "yes"]
+    y = [1,0,1,0,1]
     clf = MyRandomForestClassifier(N=5, M=3, F=1)
     clf.fit(X, y)
     predictions = clf.predict([[3, 4], [9, 10]])
     assert len(predictions) == 2
-    assert predictions == [ "no", "yes"]
+    assert predictions == [0,1]
 
 
 def test_random_forest_easy():
