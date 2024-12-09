@@ -271,3 +271,28 @@ def randomize_in_place(alist, parallel_list=None, seed=0):
         alist[i], alist[rand_index] = alist[rand_index], alist[i]
         if parallel_list is not None:
             parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
+
+def print_tree(node, indent=""):
+    """
+    Recursively prints the decision tree in a tree-like drawing format.
+
+    Args:
+        node (dict or str): A node in the tree. Can be a dictionary with keys 'feature', 'value', 'left', 'right',
+                            or a leaf node represented by a class label (string).
+        indent (str): The indentation used to format the tree.
+    """
+    if isinstance(node, dict):
+        # Print the feature and value at the current node
+        print(f"{indent}+- Feature: {node['feature']} <= {node['value']} ?")
+
+        # Recursively print the left subtree
+        print(f"{indent}  |")
+        print_tree(node['left'], indent + "  | ")
+
+        # Recursively print the right subtree
+        print(f"{indent}  |")
+        print_tree(node['right'], indent + "    ")
+    else:
+        # Leaf node, print the class label
+        print(f"{indent}  +- Class: {node}")
+
