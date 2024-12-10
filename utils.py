@@ -432,7 +432,8 @@ def plot_confusion_matrix(y_test, y_pred, labels=None):
 
     # Plot the confusion matrix
     plt.figure(figsize=(8, 6))
-    plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.Blues)
+    cmap = plt.cm.YlGnBu  # Using a different colormap with no white background
+    plt.imshow(matrix, interpolation='nearest', cmap=cmap)
     plt.title('Confusion Matrix')
     plt.colorbar()
 
@@ -441,11 +442,13 @@ def plot_confusion_matrix(y_test, y_pred, labels=None):
     plt.xticks(tick_marks, labels, rotation=45)
     plt.yticks(tick_marks, labels)
 
-    # Add values to the cells
+    # Add values to the cells, changing text color based on background
     for i in range(len(labels)):
         for j in range(len(labels)):
-            plt.text(j, i, str(matrix[i, j]), horizontalalignment="center",
-                     color="white" if matrix[i, j] > matrix.max() / 2 else "black")
+            val = matrix[i, j]
+            # Choose black or white text color based on cell intensity
+            color = "white" if val > matrix.max() / 2 else "black"
+            plt.text(j, i, str(val), horizontalalignment="center", color=color)
 
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
