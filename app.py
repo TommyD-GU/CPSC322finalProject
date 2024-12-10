@@ -71,3 +71,7 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+
+
+# http request
+# http://127.0.0.1:5001/predict?season=0.5&stem_width=0.3&gill_color=0.7&cap_diameter=0.8

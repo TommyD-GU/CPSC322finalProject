@@ -370,3 +370,84 @@ def box_plot(data, header, col_name):
     plt.title(f"Box-and-Whisker Plot of {col_name}")
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.show()
+
+def calculate_precision_recall_f1(y_test, y_pred, positive_label=1):
+    """Calculate the precision, recall, and F1 score.
+
+    Args:
+        y_test (list): The true labels.
+        y_pred (list): The predicted labels.
+        positive_label (int, optional): The label considered as the positive class. Defaults to 1.
+
+    Returns:
+        precision (float): The precision of the classifier.
+        recall (float): The recall of the classifier.
+        f1 (float): The F1 score of the classifier.
+    """
+    true_positive = 0
+    false_positive = 0
+    false_negative = 0
+
+    # Loop through each true and predicted label
+    for true, pred in zip(y_test, y_pred):
+        if pred == positive_label and true == positive_label:
+            true_positive += 1
+        elif pred == positive_label and true != positive_label:
+            false_positive += 1
+        elif pred != positive_label and true == positive_label:
+            false_negative += 1
+
+    # Calculate precision, recall, and F1 score
+    precision = true_positive / (true_positive + false_positive) if (true_positive + false_positive) > 0 else 0.0
+    recall = true_positive / (true_positive + false_negative) if (true_positive + false_negative) > 0 else 0.0
+    f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    return precision, recall, f1
+
+def plot_confusion_matrix(y_test, y_pred, labels=None):
+    """
+    Plots a confusion matrix using matplotlib.
+
+    Args:
+        y_test (list): True labels.
+        y_pred (list): Predicted labels.
+        labels (list, optional): List of unique class labels. If not provided,
+                                 it will be inferred from y_test and y_pred.
+
+    Returns:
+        None
+    """
+    # Infer class labels if not provided
+    if labels is None:
+        labels = sorted(set(y_test) | set(y_pred))
+
+    # Create the confusion matrix
+    matrix = np.zeros((len(labels), len(labels)), dtype=int)
+    label_to_index = {label: i for i, label in enumerate(labels)}
+
+    for true, pred in zip(y_test, y_pred):
+        true_index = label_to_index[true]
+        pred_index = label_to_index[pred]
+        matrix[true_index, pred_index] += 1
+
+    # Plot the confusion matrix
+    plt.figure(figsize=(8, 6))
+    plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title('Confusion Matrix')
+    plt.colorbar()
+
+    # Set axis labels
+    tick_marks = np.arange(len(labels))
+    plt.xticks(tick_marks, labels, rotation=45)
+    plt.yticks(tick_marks, labels)
+
+    # Add values to the cells
+    for i in range(len(labels)):
+        for j in range(len(labels)):
+            plt.text(j, i, str(matrix[i, j]), horizontalalignment="center",
+                     color="white" if matrix[i, j] > matrix.max() / 2 else "black")
+
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.tight_layout()
+    plt.show()
