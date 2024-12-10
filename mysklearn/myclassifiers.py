@@ -374,19 +374,20 @@ class MyDecisionTreeClassifier:
 class MyRandomForestClassifier:
     """Random Forest implementation using MyDecisionTreeClassifier."""
 
-    def __init__(self, n_trees=10, max_features=None, sample_size=0.8, max_ensemble_trees=None):
+    def __init__(self, N=10, M=None, F=None, sample_size=0.8):
         """
         Initialize the Random Forest.
         Args:
-            n_trees (int): Total number of trees (N).
-            max_features (int): Number of attributes to consider at each split (F).
+            N (int): Total number of trees.
+            M (int): Number of best trees to use in the final ensemble.
+            F (int): Number of attributes to consider at each split.
             sample_size (float): Fraction of the dataset to use for each tree.
-            max_ensemble_trees (int): Number of best trees to use in the final ensemble (M).
+
         """
-        self.n_trees = n_trees
-        self.max_features = max_features
+        self.n_trees = N
+        self.max_features = F
         self.sample_size = sample_size
-        self.max_ensemble_trees = max_ensemble_trees
+        self.max_ensemble_trees = N
         self.trees = []
 
     def fit(self, X_train, y_train):

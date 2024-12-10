@@ -3,6 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 from mysklearn.mypytable import MyPyTable
+import math
 
 
 
@@ -331,7 +332,7 @@ def plot_scatter(data, header, col_name_x, col_name_y=None):
     # Create scatter plot
     plt.figure(figsize=(8, 6))
     plt.scatter(x_values, y_values, color='blue', alpha=0.7, edgecolors='k')
-    
+
     # Add labels and title
     plt.xlabel(col_name_x)
     plt.ylabel(col_name_y if col_name_y else "Index")
@@ -353,18 +354,18 @@ def box_plot(data, header, col_name):
     """
     # Find column index for the specified column name
     col_index = header.index(col_name)
-    
+
     # Extract the column values
     col_values = [row[col_index] for row in data]
-    
+
     # Create a box plot
     plt.figure(figsize=(6, 8))
-    plt.boxplot(col_values, vert=True, patch_artist=True, 
+    plt.boxplot(col_values, vert=True, patch_artist=True,
                 boxprops=dict(facecolor="lightblue", color="blue"),
                 whiskerprops=dict(color="blue"),
                 capprops=dict(color="blue"),
                 medianprops=dict(color="red"))
-    
+
     # Add labels and title
     plt.ylabel(col_name)
     plt.title(f"Box-and-Whisker Plot of {col_name}")
@@ -454,3 +455,106 @@ def plot_confusion_matrix(y_test, y_pred, labels=None):
     plt.xlabel('Predicted Label')
     plt.tight_layout()
     plt.show()
+
+def calculate_entropy(labels):
+    """Calculate entropy for a list of labels."""
+    total = len(labels)
+    counts = {label: labels.count(label) for label in set(labels)}
+    entropy = -sum((count / total) * math.log2(count / total) for count in counts.values())
+    return entropy
+
+def calculate_enew(data, attribute_index):
+    """Calculate the weighted average of entropies (Enew) for a specific attribute."""
+    partitions = {}
+    for row in data:
+        key = row[attribute_index]
+        if key not in partitions:
+            partitions[key] = []
+        partitions[key].append(row)
+
+    weighted_entropy = sum(
+        (len(subset) / len(data)) * calculate_entropy([row[-1] for row in subset])
+        for subset in partitions.values()
+    )
+    return weighted_entropy
+
+def majority_vote(labels):
+    """Return the majority label, breaking ties alphabetically."""
+    counts = {}
+    for label in labels:
+        counts[label] = counts.get(label, 0) + 1
+
+    majority_label = None
+    max_count = 0
+
+    for label, count in sorted(counts.items()):  # Sort labels alphabetically for deterministic result
+        if count > max_count or (count == max_count and label < majority_label):
+            majority_label = label
+            max_count = count
+
+    return majority_label
+
+def tdidt(data, attributes, total_count):
+    """Recursive TDIDT algorithm with deterministic leaf result."""
+    labels = [row[-1] for row in data]
+
+    # Base case: If all labels are the same, return a leaf
+    if len(set(labels)) == 1:
+        return ["Leaf", labels[0], len(data), total_count]
+
+    # Base case: If no attributes are left, handle tie-breaking deterministically
+    if not attributes:
+        # Count occurrences of each label
+        label_counts = {label: labels.count(label) for label in set(labels)}
+        # Select the label with the highest count, breaking ties alphabetically
+        chosen_label = max(label_counts, key=lambda label: (label_counts[label], -ord(label[0])))
+        return ["Leaf", chosen_label, len(data), total_count]
+
+    # Use Enew to select the best attribute
+    enews = [calculate_enew(data, i) for i in range(len(attributes))]
+    best_attribute_index = min(
+        range(len(enews)), key=lambda i: (enews[i], attributes[i])
+    )  # Break ties by attribute name
+    best_attribute = attributes[best_attribute_index]
+
+    # Partition data by the best attribute
+    partitions = {}
+    for row in data:
+        key = row[best_attribute_index]
+        if key not in partitions:
+            partitions[key] = []
+        partitions[key].append(row)
+
+    if len(attributes) == 1:
+        tree = ["Attribute",best_attribute]
+        for att, value in partitions.items():
+            class_label = majority_class(value)
+            tree.append(['Value',att,["Leaf",class_label,len(value),len(data)]])
+        return tree
+
+
+    # Build decision node
+    tree = ["Attribute", best_attribute]
+    for key in sorted(partitions.keys()):  # Sort keys to ensure deterministic order
+        subset = partitions[key]
+        new_attributes = attributes[:]
+        new_attributes.pop(best_attribute_index)
+        filtered_subset = [
+            [value for col_index, value in enumerate(row) if col_index != best_attribute_index]
+            for row in subset
+        ]
+
+        # Recursive call to create the subtree
+        subtree = tdidt(filtered_subset, new_attributes, len(data))
+        tree.append(["Value", key, subtree])
+
+    return tree
+
+def majority_class(instances):
+    counts = {}
+    for instance in instances:
+        label = instance[-1]
+        if label not in counts:
+            counts[label] = 0
+        counts[label] += 1
+    return max(counts, key=counts.get)
