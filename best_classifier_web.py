@@ -1,16 +1,50 @@
 from flask import Flask, request, jsonify
-from mysklearn.myclassifiers import MyKNeighborsClassifier  # Import your custom KNN classifier
+from mysklearn.myclassifiers import MyKNeighborsClassifier
+import utils as utils
+import mysklearn.mypytable as mypytable
+from mysklearn.mypytable import MyPyTable
+import mysklearn.myclassifiers
+import mysklearn.myeval as myeval
+import utils as utils
+
+
+mush_data = MyPyTable()
+mush_data.load_from_file('/home/CPSC322finalProject/input_data/new_mushroom_cleaned.csv')
+df_mush = []
+for i, row in enumerate(mush_data.data):
+    df_mush.append(row)
+
+new_data = utils.sample_classification_data(df_mush)
+
+season = [row[7] for row in new_data]
+stem_width = [row[5] for row in new_data]
+gill_color = [row[3] for row in new_data]
+cap_diameter = [row[0] for row in new_data]
+
+yummy_or_nah = [row[8] for row in new_data]
+
+# normalize the data
+season_norm = utils.normalize_data(season)
+stem_width_norm = utils.normalize_data(stem_width)
+gill_color_norm = utils.normalize_data(gill_color)
+cap_diameter_norm = utils.normalize_data(cap_diameter)
+
+data_zipped = list(zip(season_norm, stem_width_norm, gill_color_norm, cap_diameter_norm))
+X_data = data_zipped
+
+X_train, X_test, y_train, y_test = myeval.train_test_split(X_data, yummy_or_nah, test_size=0.33, random_state=1, shuffle=True)
+
 
 app = Flask(__name__)
 
 # Load your training data (replace with actual data loading)
 # Example: replace this with the actual training dataset and labels
-X_train = [
-    [1.0, 2.1, 3.2, 4.1],  # Example training instances
-    [1.5, 2.0, 3.5, 4.0],
-    [2.0, 2.3, 3.6, 4.2],
-]
-y_train = ["edible", "poisonous", "edible"]  # Example labels
+# X_train = [
+#     [1.0, 2.1, 3.2, 4.1],  # Example training instances
+#     [1.5, 2.0, 3.5, 4.0],
+#     [2.0, 2.3, 3.6, 4.2],
+# ]
+# y_train = ["edible", "poisonous", "edible"]  # Example labels
 
 # Initialize and train the KNN model
 knn_model = MyKNeighborsClassifier(n_neighbors=3)
