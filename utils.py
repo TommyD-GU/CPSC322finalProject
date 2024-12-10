@@ -5,8 +5,6 @@ import numpy as np
 from mysklearn.mypytable import MyPyTable
 import math
 
-
-
 def euclid_dist(pt1, pt2):
     """Computes the Euclidean distance between two points.
 
@@ -80,8 +78,6 @@ def freq_plot(data, header,col_name_x, lables=None):
     plt.title(f'Frequency plot of {col_name_x}')
     plt.show()
 
-
-
 def generate_cute_color():
     """
     Generates a random hex color within a "cute" range.
@@ -97,73 +93,6 @@ def generate_cute_color():
 
     # Convert to hex
     return f"#{red:02X}{green:02X}{blue:02X}"
-
-
-def calculate_accuracy_error_rate(results):
-    """Calculate the accuracy and error rate from the results of cross-validation.
-
-    Args:
-        results (list of tuples): Each tuple contains the true labels (y_test) and
-            the predicted labels (y_pred). Each tuple is of the form (y_test, y_pred).
-
-    Returns:
-        accuracy (float): The accuracy of the classifier.
-        error_rate (float): The error rate of the classifier.
-    """
-    correct = 0  # Initialize a counter for correct predictions
-    total = 0    # Initialize a counter for the total number of predictions
-
-    # Iterate through the results for each fold
-    for y_test, y_pred in results:
-        # Count the number of correct predictions for each fold
-        correct += sum([1 for true, pred in zip(y_test, y_pred) if true == pred])
-        total += len(y_test)  # Update the total number of predictions
-
-    # Calculate accuracy as the ratio of correct predictions to total predictions
-    accuracy = correct / total
-    # Calculate error rate as the complement of accuracy
-    error_rate = 1 - accuracy
-
-    return accuracy, error_rate
-
-def calculate_precision_recall_f1(results):
-    """Calculate precision, recall, and F1 score from the results of cross-validation.
-
-    Args:
-        results (list of tuples): Each tuple contains the true labels (y_test)
-            and the predicted labels (y_pred). Each tuple is of the form (y_test, y_pred).
-
-    Returns:
-        precision (float): The precision of the classifier.
-        recall (float): The recall of the classifier.
-        f1 (float): The F1 score of the classifier.
-    """
-    true_positive = 0  # Initialize counter for true positives
-    false_positive = 0  # Initialize counter for false positives
-    false_negative = 0  # Initialize counter for false negatives
-    true_negative = 0  # Initialize counter for true negatives
-
-    # Iterate through each fold's true and predicted values
-    for y_test, y_pred in results:
-        for true, pred in zip(y_test, y_pred):
-            # Count true positives, false positives, false negatives, and true negatives
-            if true == 1 and pred == 1:
-                true_positive += 1
-            elif true == 0 and pred == 1:
-                false_positive += 1
-            elif true == 1 and pred == 0:
-                false_negative += 1
-            elif true == 0 and pred == 0:
-                true_negative += 1
-
-    # Calculate precision (how many predicted positives are actually positive)
-    precision = true_positive / (true_positive + false_positive) if (true_positive + false_positive) > 0 else 0
-    # Calculate recall (how many actual positives were correctly identified)
-    recall = true_positive / (true_positive + false_negative) if (true_positive + false_negative) > 0 else 0
-    # Calculate F1 score (harmonic mean of precision and recall)
-    f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-
-    return precision, recall, f1
 
 def calculate_confusion_matrix(results):
     """Calculate the confusion matrix from the results of cross-validation.
@@ -272,7 +201,6 @@ def randomize_in_place(alist, parallel_list=None, seed=0):
         alist[i], alist[rand_index] = alist[rand_index], alist[i]
         if parallel_list is not None:
             parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
-
 
 def sample_classification_data(dataset, classification_index=8, sample_size=1000):
     """

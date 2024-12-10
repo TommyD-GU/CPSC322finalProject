@@ -319,70 +319,19 @@ class MyDecisionTreeClassifier:
                     value = current_node[i][1]
                     # Add new rule condition and push subtree to element
                     element.append((current_node[i][2], rule_conditions + [f"{attribute_name} == {value}"]))
-
-    # # BONUS method
-    # def visualize_tree(self, dot_fname, pdf_fname, attribute_names=None):
-    #     """
-    #     Visualizes a decision tree using Graphviz and generates a .dot and .pdf file.
-
-    #     Args:
-    #         dot_fname (str): The name of the .dot output file.
-    #         pdf_fname (str): The name of the .pdf output file generated from the .dot file.
-    #         attribute_names (list of str or None): A list of attribute names to use in the visualization
-    #             (None if a list is not provided, in which case default attribute names based on
-    #             indexes (e.g., "att0", "att1", ...) will be used).
-    #     """
-    #     def add_nodes_edges(dot, tree, parent_name=None):
-    #         """Recursively adds nodes and edges to the Graphviz Digraph."""
-    #         if tree[0] == "Leaf":
-    #             # Leaf node
-    #             node_name = f'leaf_{id(tree)}'  # Unique identifier for each node
-    #             label = f"Class = {tree[1]}\n({tree[2]}/{tree[3]})"
-    #             dot.node(node_name, label=label, shape="ellipse", style="filled", color="lightblue")
-    #             if parent_name:
-    #                 dot.edge(parent_name, node_name)
-    #         else:
-    #             # Attribute node
-    #             attribute_name = (
-    #                 attribute_names[int(tree[1][3:])] if attribute_names else tree[1]
-    #             )
-    #             node_name = f'node_{id(tree)}'  # Unique identifier for each node
-    #             dot.node(node_name, label=attribute_name, shape="box", style="rounded,filled", color="lightyellow")
-    #             if parent_name:
-    #                 dot.edge(parent_name, node_name)
-
-    #             # Recursively process children
-    #             for i in range(2, len(tree)):
-    #                 value = tree[i][1]
-    #                 child_name = f'{node_name}_{value}'  # Unique edge name
-    #                 add_nodes_edges(dot, tree[i][2], node_name)
-
-    #     # Create a Graphviz Digraph
-    #     dot = Digraph()
-
-    #     # Add nodes and edges recursively
-    #     add_nodes_edges(dot, self.tree)
-
-    #     # Save the .dot file and render it as a .pdf
-    #     dot.render(filename=dot_fname, format="pdf", cleanup=True)
-
-    #     # Ensure the generated PDF is saved in the required directory
-    #     os.makedirs("tree_vis", exist_ok=True)
-    #     os.rename(f"{dot_fname}.pdf", f"tree_vis/{pdf_fname}.pdf")
-
-
+                    
 class MyRandomForestClassifier:
     """Random Forest implementation using MyDecisionTreeClassifier."""
 
     def __init__(self, N=10, M=None, F=None, sample_size=0.8):
         """
         Initialize the Random Forest.
+
         Args:
             N (int): Total number of trees.
             M (int): Number of best trees to use in the final ensemble.
             F (int): Number of attributes to consider at each split.
             sample_size (float): Fraction of the dataset to use for each tree.
-
         """
         self.n_trees = N
         self.max_features = F
@@ -391,7 +340,16 @@ class MyRandomForestClassifier:
         self.trees = []
 
     def fit(self, X_train, y_train):
-        """Fit the Random Forest model."""
+        """Fit the Random Forest model.
+
+        Args:
+            X_train (list of list of numeric vals): The list of training samples.
+                The shape of X_train is (n_train_samples, n_features).
+            y_train (list of int): The list of labels corresponding to the training samples.
+
+        Returns:
+            None
+        """
         n_samples = len(X_train)
         n_features = len(X_train[0])
         self.max_features = self.max_features or int(n_features ** 0.5)
@@ -412,7 +370,16 @@ class MyRandomForestClassifier:
             self._select_best_trees(X_train, y_train)
 
     def _select_best_trees(self, X_train, y_train):
-        """Select the best subset of trees based on training accuracy."""
+        """Select the best subset of trees based on training accuracy.
+
+        Args:
+            X_train (list of list of numeric vals): The list of training samples.
+                The shape of X_train is (n_train_samples, n_features).
+            y_train (list of int): The list of labels corresponding to the training samples.
+
+        Returns:
+            None
+        """
         tree_accuracies = []
         for tree, sample_indices in self.trees:
             X_sample = [X_train[i] for i in sample_indices]
@@ -426,7 +393,15 @@ class MyRandomForestClassifier:
         self.trees = [tree for tree, _ in tree_accuracies[:self.max_ensemble_trees]]
 
     def predict(self, X_test):
-        """Predict the class labels for the input data."""
+        """Predict the class labels for the input data.
+
+        Args:
+            X_test (list of list of numeric vals): The list of testing samples.
+                The shape of X_test is (n_test_samples, n_features).
+
+        Returns:
+            predictions (list of int): The list of predicted class labels for each instance in X_test.
+        """
         predictions = []
         for instance in X_test:
             votes = {}
