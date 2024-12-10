@@ -1,6 +1,6 @@
 import pickle
 from flask import Flask, request, jsonify
-from mysklearn.myknnclassifier import MyKNeighborsClassifier  # Import your KNN classifier
+from mysklearn.myclassifiers import MyKNeighborsClassifier  # Import your KNN classifier
 
 app = Flask(__name__)
 
@@ -23,16 +23,16 @@ def predict():
     stem_width = request.args.get("stem_width")
     gill_color = request.args.get("gill_color")
     cap_diameter = request.args.get("cap_diameter")
-    
+
     # Convert them into a list (or normalize if needed)
     instance = [float(season), float(stem_width), float(gill_color), float(cap_diameter)]
-                   
+
     # Load the trained KNN model
     knn = load_model()
-    
+
     # Make a prediction using the KNN model
     pred = knn.predict([instance])  # KNN expects a 2D array, hence wrapping the instance in another list
-    
+
     # Return the prediction in JSON format
     return jsonify({"prediction": pred[0]}), 200
 

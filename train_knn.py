@@ -1,5 +1,5 @@
 import pickle
-from mysklearn.myknnclassifier import MyKNeighborsClassifier
+from mysklearn.myclassifiers import MyKNeighborsClassifier
 from mysklearn.mypytable import MyPyTable
 import utils
 from mysklearn import myeval

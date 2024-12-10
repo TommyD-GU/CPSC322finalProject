@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import importlib
 import utils
 from mysklearn.mypytable import MyPyTable
-from mysklearn.myknnclassifier import MyKNeighborsClassifier
+from mysklearn.myclassifiers import MyKNeighborsClassifier
 import mysklearn.myeval as myeval
 
 app = Flask(__name__)
@@ -49,9 +49,9 @@ def predict():
 
     # Assuming the input data contains 'season', 'stem_width', 'gill_color', 'cap_diameter'
     input_data = [
-        data['season'], 
-        data['stem_width'], 
-        data['gill_color'], 
+        data['season'],
+        data['stem_width'],
+        data['gill_color'],
         data['cap_diameter']
     ]
 
